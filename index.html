@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vetacre Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff;
+        }
+        .chat-container {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+        .bot-message {
+            background-color: #e0f2fe;
+        }
+        .user-message {
+            background-color: #bfdbfe;
+        }
+        @media (max-width: 640px) {
+            .chat-container {
+                max-height: calc(100vh - 160px);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-2xl">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex items-center gap-3 mb-6">
+                <i class="bi bi-robot text-3xl text-blue-600"></i>
+                <h1 class="text-2xl font-bold text-gray-800">Vetacre</h1>
+            </div>
+
+            <div class="chat-container mb-4" id="chatContainer">
+                <div class="bot-message rounded-lg p-3 mb-4">
+                    <p>Hello! I'm Vetacre, your friendly AI assistant. How can I help you today?</p>
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <input type="text" id="userInput" 
+                    class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Type your message here..."
+                    onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()" 
+                    class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="bi bi-send"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const responses = {
+            "hello": "Hi there! How can I assist you today?",
+            "how are you": "I'm functioning well, thank you! How can I help you?",
+            "what's your name": "I'm Vetacre, your AI assistant!",
+            "bye": "Goodbye! Have a great day!",
+            "default": "I'm still learning. Could you please rephrase that or ask something else?"
+        };
+
+        function addMessage(message, isUser = false) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `${isUser ? 'user-message' : 'bot-message'} rounded-lg p-3 mb-4`;
+            messageDiv.innerHTML = `<p>${message}</p>`;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function getResponse(input) {
+            const lowercaseInput = input.toLowerCase();
+            for (let key in responses) {
+                if (lowercaseInput.includes(key)) {
+                    return responses[key];
+                }
+            }
+            return responses.default;
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+            
+            if (message) {
+                addMessage(message, true);
+                userInput.value = '';
+
+                // Simulate typing delay
+                setTimeout(() => {
+                    const response = getResponse(message);
+                    addMessage(response);
+                }, 500);
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
